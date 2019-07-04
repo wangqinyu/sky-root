@@ -1,0 +1,50 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: sky-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          # 服务名小写
+          lower-case-service-id: true
+      routes:
+      - id: sky-server1
+        # lb代表从注册中心获取服务，且负载均衡方式转发
+        uri: lb://sky-server
+        predicates:
+        - Path=/sky/**
+        # 加上StripPrefix=1，否则转发到后端服务时会带上consumer前缀
+        filters:
+#          路由过滤转发
+        - RewritePath=/sky/ignore/(?<segment>.*), /$\{segment}
+        - RewritePath=/sky/login/(?<segment>.*), /$\{segment}
+        - RewritePath=/sky/(?<segment>.*), /$\{segment}
+        # 进行token过滤
+#        - LoginAuthenticationFilter
+#        - StripPrefix=1
+  servlet:
+    multipart:
+      max-request-size: 100M
+      max-file-size: 50M
+#eureka-client
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:sky@localhost:8001/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    # 实例名。
+    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port}
+# 暴露监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

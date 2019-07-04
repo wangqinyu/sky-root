@@ -1,0 +1,87 @@
+server:
+  port: 8006
+spring:
+  application:
+    name: sky-adapter-kidcrm
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://qy.chinakuaishangke.com:3306/sky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: root
+    password: ksk123!@#
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        #1.PhysicalNamingStrategyStandardImpl:不做修改，直接映射
+        #2.SpringPhysicalNamingStrategy:在进行领域映射时,首字母小写，大写字母变为下划线加小写
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  quartz:
+    auto-startup: true
+    overwrite-existing-jobs: true
+    #相关属性配置
+    properties:
+      org:
+        quartz:
+          scheduler:
+            #调度器实例名称
+            instanceName: quartzScheduler
+            #调度器实例编号自动生成
+            instanceId: AUTO
+          jobStore:
+            #持久化方式配置
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            #持久化方式配置数据驱动，MySQL数据库
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            #quartz相关数据表前缀名
+            tablePrefix: QRTZ_
+            #开启分布式部署
+            isClustered: false
+            #分布式节点有效性检查时间间隔，单位：毫秒
+            clusterCheckinInterval: 10000
+            useProperties: false
+          threadPool:
+            #线程池实现类
+            class: org.quartz.simpl.SimpleThreadPool
+            #执行最大并发线程数量
+            threadCount: 10
+            #线程优先级
+            threadPriority: 5
+            #配置是否启动自动加载数据库内的定时任务，默认true
+            threadsInheritContextClassLoaderOfInitializingThread: true
+    job-store-type: jdbc
+common:
+  kidcrm:
+    name: kidcrm
+    url: http://kidcrmapi.tedu.cn/tcOnline/findRealTimeData
+    projectId: 1
+#eureka-client
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:sky@localhost:8001/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+      # 实例名。
+    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port}
+# 暴露监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+feign:
+  okhttp:
+    enabled: true
+  hystrix:
+    enabled: false
+logging:
+  level:
+    com.sky.skyserver: debug
+

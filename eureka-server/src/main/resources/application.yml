@@ -1,0 +1,19 @@
+server:
+  port: 8001
+#eureka-server
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://${eureka.server.instance.hostname}:${server.port}/eureka/
+  server:
+    instance:
+      hostname: localhost
+spring:
+  application:
+    name: eureka-server
+  security:
+    user:
+      name: admin
+      password: sky

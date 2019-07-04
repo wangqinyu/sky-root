@@ -1,0 +1,76 @@
+server:
+  port: 8081
+common:
+  sms:
+    url: dysmsapi.aliyuncs.com
+    accessKeyId: LTAI4nzx8Q10c0uV
+    secretAccessKey: E8wKPODoMHSwaV0uOrWEbG4vYOvRlP
+    signName: 天机互联
+    templateCode: SMS_152210187
+    queueName: Alicom-Queue-1780019743523266-
+    expires: 300
+    version: 2017-05-25
+    postAction: SendSms
+    queryAction: QuerySendDetails
+spring:
+  application:
+    name: sky-server
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://qy.chinakuaishangke.com:3306/sky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: root
+    password: ksk123!@#
+  redis:
+    host: qy.chinakuaishangke.com
+    port: 6379
+    password: ksk123456
+    database: 1
+    timeout: 2000ms
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        #1.PhysicalNamingStrategyStandardImpl:不做修改，直接映射
+        #2.SpringPhysicalNamingStrategy:在进行领域映射时,首字母小写，大写字母变为下划线加小写
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  session:
+    redis:
+      flush-mode: on_save
+      namespace: session.example
+      cleanup-cron: 0 * * * * *
+    store-type: redis
+    timeout: 1800s
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 50MB
+#eureka-client
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:sky@localhost:8001/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    # 实例名。
+    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port}
+# 暴露监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+feign:
+  okhttp:
+    enabled: true
+  hystrix:
+    enabled: false
+logging:
+  level:
+    com.sky.skyserver: debug
