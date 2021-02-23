@@ -2,12 +2,12 @@ server:
   port: 8081
 common:
   sms:
-    url: dysmsapi.aliyuncs.com
-    accessKeyId: LTAI4nzx8Q10c0uV
-    secretAccessKey: E8wKPODoMHSwaV0uOrWEbG4vYOvRlP
+    url: *****.aliyuncs.com
+    accessKeyId: *******
+    secretAccessKey: *****
     signName: 天机互联
     templateCode: SMS_152210187
-    queueName: Alicom-Queue-1780019743523266-
+    queueName: Alicom-Queue-*************-
     expires: 300
     version: 2017-05-25
     postAction: SendSms
